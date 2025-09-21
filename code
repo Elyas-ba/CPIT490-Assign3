@@ -1,0 +1,30 @@
+#!/bin/bash
+
+while :; do
+  read -p "Enter username: " un
+  useradd -m $un && echo "'$un' user is created" && break
+  echo "creating new user is failed. try again"
+done
+
+while :; do
+  echo "Set a strong password for '$un' (+8 chars)"
+  read -p "password: " pass; echo
+  [ ${#pass} -lt 8 ] && echo "Too short. try again" && continue
+  echo -e "$pass\n$pass" | passwd "$un" >/dev/null 2>&1 && echo "password is set." && break
+  echo "password is failed. try again"
+done
+
+while :; do
+  read -p "Enter default group name to add: " group
+  usermod -aG "$group" "$un" && echo "added '$un' to '$group' " && break
+  echo "something is wrong. try again"
+done
+
+while :; do
+  read -p "confirm creating '$un' user? (y/n): " yn
+  case "$yn" in
+    y|Y) echo "keeping '$un'"; break ;;
+    n|N) userdel -r "$un" && echo "deleting '$un'" && break || echo "something is wrong. try again" ;;
+    *) echo "type y or n " ;;
+  esac
+done
