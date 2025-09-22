@@ -1,11 +1,13 @@
 #!/bin/bash
 
+create_user(){
 while :; do
   read -p "Enter username: " un
   useradd -m $un && echo "'$un' user is created" && break
   echo "creating new user is failed. try again"
 done
-
+}
+create_password(){
 while :; do
   echo "Set a strong password for '$un' (+8 chars)"
   read -p "password: " pass; echo
@@ -13,13 +15,15 @@ while :; do
   echo -e "$pass\n$pass" | passwd "$un" >/dev/null 2>&1 && echo "password is set." && break
   echo "password is failed. try again"
 done
-
+}
+add_group(){
 while :; do
   read -p "Enter default group name to add: " group
   usermod -aG "$group" "$un" && echo "added '$un' to '$group' " && break
   echo "something is wrong. try again"
 done
-
+}
+confirm_user(){
 while :; do
   read -p "confirm creating '$un' user? (y/n): " yn
   case "$yn" in
@@ -28,3 +32,10 @@ while :; do
     *) echo "type y or n " ;;
   esac
 done
+}
+create_user
+create_password
+add_group
+confirm_user
+
+
